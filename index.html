@@ -10,6 +10,7 @@
 <body>
 
     <form action="https://urlshorgoner-production.up.railway.app/shorten" method="post">
+        <!-- <form action="http://localhost:8080/shorten" method="post"> -->
         <input type="text" name="url" id="url" placeholder="Enter URL">
         <input type="submit" value="Shorten">
     </form>
@@ -24,7 +25,7 @@
         // Update the HTML to display the shortened URL
         const shortenedUrlDiv = document.getElementById('shortened-url');
         if (shortenedUrl)
-            shortenedUrlDiv.innerHTML = `Shortened URL: ${shortenedUrl}`;
+            shortenedUrlDiv.innerHTML = `Shortened URL: <a href='https://urlshorgoner-production.up.railway.app/${shortenedUrl}'>urlshorgoner-production.up.railway.app/${shortenedUrl}</a>`;
     </script>
 </body>
 

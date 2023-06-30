@@ -56,6 +56,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
+		fmt.Print("Database created successfully! ")
 		db, err := sql.Open("sqlite3", "./database.db")
 		if err != nil {
 			log.Fatal(err)
