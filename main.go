@@ -14,10 +14,11 @@ import (
 )
 
 func createTable(db *sql.DB) {
-	urls_table := `CREATE TABLE IF NOT EXISTS urls(
-        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-		"short_url" TEXT,
-        "original_url" TEXT);`
+	urls_table := `CREATE TABLE IF NOT EXISTS urls (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    short_url VARCHAR(255),
+    original_url VARCHAR(255)
+)`
 
 	_, err := db.Exec(urls_table)
 	if err != nil {
@@ -73,7 +74,7 @@ func envPortOr(port string) string {
 }
 func main() {
 
-	db, err := sql.Open("mysql", "mysql://root:ja5HlxXH9WDlANfO4FV0@containers-us-west-202.railway.app:7900/railway")
+	db, err := sql.Open("mysql", "root:ja5HlxXH9WDlANfO4FV0@tcp(containers-us-west-202.railway.app:7900)/railway")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -93,7 +94,7 @@ func main() {
 			return
 		}
 
-		db, err := sql.Open("mysql", "mysql://root:ja5HlxXH9WDlANfO4FV0@containers-us-west-202.railway.app:7900/railway")
+		db, err := sql.Open("mysql", "root:ja5HlxXH9WDlANfO4FV0@tcp(containers-us-west-202.railway.app:7900)/railway")
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -108,7 +109,7 @@ func main() {
 	})
 	r.GET("/:short_url", func(c *gin.Context) {
 		short_url := c.Param("short_url")
-		db, err := sql.Open("mysql", "mysql://root:ja5HlxXH9WDlANfO4FV0@containers-us-west-202.railway.app:7900/railway")
+		db, err := sql.Open("mysql", "root:ja5HlxXH9WDlANfO4FV0@tcp(containers-us-west-202.railway.app:7900)/railway")
 		if err != nil {
 			log.Fatal(err)
 		}
