@@ -16,8 +16,8 @@ import (
 func createTable(db *sql.DB) {
 	urls_table := `CREATE TABLE IF NOT EXISTS urls (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    short_url VARCHAR(255),
-    original_url VARCHAR(255)
+    short_url VARCHAR(255) UNIQUE,
+    original_url VARCHAR(255) UNIQUE
 )`
 
 	_, err := db.Exec(urls_table)
@@ -46,7 +46,7 @@ func getUrl(db *sql.DB, short_url string) string {
 	err := row.Scan(&originalURL)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			// Handle case when no rows are found
+			originalURL = ""
 		} else {
 			log.Fatal(err)
 		}
