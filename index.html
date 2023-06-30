@@ -9,10 +9,23 @@
 
 <body>
 
-    <form action="http://localhost:8080/shorten" method="post">
+    <form action="https://urlshorgoner-production.up.railway.app/shorten" method="post">
         <input type="text" name="url" id="url" placeholder="Enter URL">
         <input type="submit" value="Shorten">
     </form>
+    <div id="shortened-url">
+    </div>
+
+    <script>
+        // Extract the shortened URL from the query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const shortenedUrl = urlParams.get('shortenedUrl');
+
+        // Update the HTML to display the shortened URL
+        const shortenedUrlDiv = document.getElementById('shortened-url');
+        if (shortenedUrl)
+            shortenedUrlDiv.innerHTML = `Shortened URL: ${shortenedUrl}`;
+    </script>
 </body>
 
 </html>

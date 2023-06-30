@@ -85,8 +85,11 @@ func main() {
 		defer db.Close()
 		short_url := createShortUrl(original_url)
 		addUrl(db, short_url, original_url)
-		c.JSON(http.StatusOK, gin.H{
-			"short_url": short_url,
+		// c.JSON(http.StatusOK, gin.H{
+		// 	"short_url": short_url,
+		// })
+		c.HTML(http.StatusOK, "index.html", gin.H{
+			"shortenedUrl": short_url,
 		})
 	})
 	r.GET("/:short_url", func(c *gin.Context) {
