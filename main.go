@@ -113,6 +113,7 @@ func main() {
 	})
 	r.POST("/shorten", func(c *gin.Context) {
 		original_url := c.PostForm("url")
+		original_url = strings.TrimSpace(original_url)
 		if original_url == "" {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": "Url is empty",
