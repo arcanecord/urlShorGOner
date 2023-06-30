@@ -97,7 +97,8 @@ func envPortOr(port string) string {
 }
 func main() {
 
-	db, err := sql.Open("mysql", "root:ja5HlxXH9WDlANfO4FV0@tcp(containers-us-west-202.railway.app:7900)/railway")
+	db_host := os.Getenv("DB_HOST")
+	db, err := sql.Open("mysql", db_host)
 	if err != nil {
 		log.Fatal(err)
 	}
