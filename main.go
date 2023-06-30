@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"database/sql"
 
@@ -41,7 +42,7 @@ func addUrl(db *sql.DB, shortURL string, originalURL string) {
 	}
 
 	if count > 0 {
-		// Original URL already exists, return the short URL
+		// Original URL already exists
 		fmt.Println("Original URL already exists")
 		return
 	}
@@ -52,7 +53,9 @@ func addUrl(db *sql.DB, shortURL string, originalURL string) {
 		log.Fatal(err)
 	}
 	defer insertStmt.Close()
-
+	if !strings.HasPrefix(originalURL, "http://") && !strings.HasPrefix(originalURL, "https://") {
+		originalURL = "http://" + originalURL
+	}
 	_, err = insertStmt.Exec(shortURL, originalURL)
 	if err != nil {
 		log.Fatal(err)
