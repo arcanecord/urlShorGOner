@@ -88,9 +88,8 @@ func main() {
 		// c.JSON(http.StatusOK, gin.H{
 		// 	"short_url": short_url,
 		// })
-		c.HTML(http.StatusOK, "index.html", gin.H{
-			"shortenedUrl": short_url,
-		})
+		// redirect to the index page with the short url in the url
+		c.Redirect(http.StatusMovedPermanently, "/?shortenedUrl="+short_url)
 	})
 	r.GET("/:short_url", func(c *gin.Context) {
 		short_url := c.Param("short_url")
