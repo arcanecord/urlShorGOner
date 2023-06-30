@@ -65,10 +65,9 @@ func main() {
 	}
 
 	r := gin.Default()
+	r.LoadHTMLGlob("index.html")
 	r.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "Hello World!",
-		})
+		c.HTML(http.StatusOK, "index.html", nil)
 	})
 	r.POST("/shorten", func(c *gin.Context) {
 		original_url := c.PostForm("url")
