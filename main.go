@@ -18,7 +18,7 @@ func createTable(db *sql.DB) {
 	urls_table := `CREATE TABLE IF NOT EXISTS urls (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     short_url VARCHAR(255) UNIQUE,
-    original_url VARCHAR(255) UNIQUE
+    original_url VARCHAR(2500) UNIQUE
 )`
 
 	_, err := db.Exec(urls_table)
