@@ -78,6 +78,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer db.Close()
+
 	createTable(db)
 
 	r := gin.Default()
@@ -94,11 +96,11 @@ func main() {
 			return
 		}
 
-		db, err := sql.Open("mysql", "root:ja5HlxXH9WDlANfO4FV0@tcp(containers-us-west-202.railway.app:7900)/railway")
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer db.Close()
+		// db, err := sql.Open("mysql", "root:ja5HlxXH9WDlANfO4FV0@tcp(containers-us-west-202.railway.app:7900)/railway")
+		// if err != nil {
+		// 	log.Fatal(err)
+		// }
+		// defer db.Close()
 		short_url := createShortUrl(original_url)
 		addUrl(db, short_url, original_url)
 		// c.JSON(http.StatusOK, gin.H{
@@ -109,11 +111,11 @@ func main() {
 	})
 	r.GET("/:short_url", func(c *gin.Context) {
 		short_url := c.Param("short_url")
-		db, err := sql.Open("mysql", "root:ja5HlxXH9WDlANfO4FV0@tcp(containers-us-west-202.railway.app:7900)/railway")
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer db.Close()
+		// db, err := sql.Open("mysql", "root:ja5HlxXH9WDlANfO4FV0@tcp(containers-us-west-202.railway.app:7900)/railway")
+		// if err != nil {
+		// 	log.Fatal(err)
+		// }
+		// defer db.Close()
 		original_url := getUrl(db, short_url)
 		c.Redirect(http.StatusMovedPermanently, original_url)
 	})
