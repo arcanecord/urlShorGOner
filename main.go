@@ -10,37 +10,47 @@ import (
 	"database/sql"
 
 	"github.com/gin-gonic/gin"
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func createTable(db *sql.DB) {
-	urls_table := `CREATE TABLE urls(
+	urls_table := `CREATE TABLE IF NOT EXISTS urls(
         id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 		"short_url" TEXT,
         "original_url" TEXT);`
 
-	query, err := db.Prepare(urls_table)
+	_, err := db.Exec(urls_table)
 	if err != nil {
 		log.Fatal(err)
 	}
-	query.Exec()
 	fmt.Println("Table created successfully!")
 }
 func addUrl(db *sql.DB, short_url string, original_url string) {
-	insert_url := `INSERT INTO urls(short_url, original_url) VALUES (?, ?)`
-	query, err := db.Prepare(insert_url)
+	insertURL := `INSERT INTO urls (short_url, original_url) VALUES (?, ?)`
+	query, err := db.Prepare(insertURL)
 	if err != nil {
 		log.Fatal(err)
 	}
-	query.Exec(short_url, original_url)
-	fmt.Println("Url added successfully! ", short_url, " ", original_url)
+	defer query.Close()
+
+	_, err = query.Exec(short_url, original_url)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 func getUrl(db *sql.DB, short_url string) string {
-	var original_url string
+	var originalURL string
 	query := `SELECT original_url FROM urls WHERE short_url = ?`
 	row := db.QueryRow(query, short_url)
-	row.Scan(&original_url)
-	return original_url
+	err := row.Scan(&originalURL)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			// Handle case when no rows are found
+		} else {
+			log.Fatal(err)
+		}
+	}
+	return originalURL
 }
 
 func createShortUrl(original_url string) string {
@@ -63,19 +73,11 @@ func envPortOr(port string) string {
 }
 func main() {
 
-	if _, err := os.Stat("database.db"); os.IsNotExist(err) {
-		file, err := os.Create("database.db")
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Print("Database created successfully! ")
-		db, err := sql.Open("sqlite3", "./database.db")
-		if err != nil {
-			log.Fatal(err)
-		}
-		createTable(db)
-		file.Close()
+	db, err := sql.Open("mysql", "mysql://root:ja5HlxXH9WDlANfO4FV0@containers-us-west-202.railway.app:7900/railway")
+	if err != nil {
+		log.Fatal(err)
 	}
+	createTable(db)
 
 	r := gin.Default()
 	r.LoadHTMLGlob("index.html")
@@ -91,7 +93,7 @@ func main() {
 			return
 		}
 
-		db, err := sql.Open("sqlite3", "./database.db")
+		db, err := sql.Open("mysql", "mysql://root:ja5HlxXH9WDlANfO4FV0@containers-us-west-202.railway.app:7900/railway")
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -106,7 +108,7 @@ func main() {
 	})
 	r.GET("/:short_url", func(c *gin.Context) {
 		short_url := c.Param("short_url")
-		db, err := sql.Open("sqlite3", "./database.db")
+		db, err := sql.Open("mysql", "mysql://root:ja5HlxXH9WDlANfO4FV0@containers-us-west-202.railway.app:7900/railway")
 		if err != nil {
 			log.Fatal(err)
 		}
