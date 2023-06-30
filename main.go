@@ -26,19 +26,39 @@ func createTable(db *sql.DB) {
 	}
 	fmt.Println("Table created successfully!")
 }
-func addUrl(db *sql.DB, short_url string, original_url string) {
-	insertURL := `INSERT INTO urls (short_url, original_url) VALUES (?, ?)`
-	query, err := db.Prepare(insertURL)
+func addUrl(db *sql.DB, shortURL string, originalURL string) {
+	checkURLQuery := `SELECT COUNT(*) FROM urls WHERE original_url = ?`
+	checkStmt, err := db.Prepare(checkURLQuery)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer query.Close()
+	defer checkStmt.Close()
 
-	_, err = query.Exec(short_url, original_url)
+	var count int
+	err = checkStmt.QueryRow(originalURL).Scan(&count)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if count > 0 {
+		// Original URL already exists, return the short URL
+		fmt.Println("Original URL already exists")
+		return
+	}
+
+	insertURLQuery := `INSERT INTO urls (short_url, original_url) VALUES (?, ?)`
+	insertStmt, err := db.Prepare(insertURLQuery)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer insertStmt.Close()
+
+	_, err = insertStmt.Exec(shortURL, originalURL)
 	if err != nil {
 		log.Fatal(err)
 	}
 }
+
 func getUrl(db *sql.DB, short_url string) string {
 	var originalURL string
 	query := `SELECT original_url FROM urls WHERE short_url = ?`
