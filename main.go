@@ -118,27 +118,12 @@ func main() {
 			})
 			return
 		}
-
-		// db, err := sql.Open("mysql", "root:ja5HlxXH9WDlANfO4FV0@tcp(containers-us-west-202.railway.app:7900)/railway")
-		// if err != nil {
-		// 	log.Fatal(err)
-		// }
-		// defer db.Close()
 		short_url := createShortUrl(original_url)
 		addUrl(db, short_url, original_url)
-		// c.JSON(http.StatusOK, gin.H{
-		// 	"short_url": short_url,
-		// })
-		// redirect to the index page with the short url in the url
 		c.Redirect(http.StatusMovedPermanently, "/?shortenedUrl="+short_url)
 	})
 	r.GET("/:short_url", func(c *gin.Context) {
 		short_url := c.Param("short_url")
-		// db, err := sql.Open("mysql", "root:ja5HlxXH9WDlANfO4FV0@tcp(containers-us-west-202.railway.app:7900)/railway")
-		// if err != nil {
-		// 	log.Fatal(err)
-		// }
-		// defer db.Close()
 		original_url := getUrl(db, short_url)
 		c.Redirect(http.StatusMovedPermanently, original_url)
 	})
