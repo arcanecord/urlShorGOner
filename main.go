@@ -49,6 +49,18 @@ func createShortUrl(original_url string) string {
 	hashed_url := fmt.Sprintf("%x", h.Sum(nil))
 	return hashed_url[:8]
 }
+
+// Returns PORT from environment if found, defaults to
+// value in `port` parameter otherwise. The returned port
+// is prefixed with a `:`, e.g. `":3000"`.
+func envPortOr(port string) string {
+	// If `PORT` variable in environment exists, return it
+	if envPort := os.Getenv("PORT"); envPort != "" {
+		return ":" + envPort
+	}
+	// Otherwise, return the value of `port` variable from function argument
+	return ":" + port
+}
 func main() {
 
 	if _, err := os.Stat("database.db"); os.IsNotExist(err) {
@@ -102,6 +114,5 @@ func main() {
 		original_url := getUrl(db, short_url)
 		c.Redirect(http.StatusMovedPermanently, original_url)
 	})
-
-	r.Run() // listen and serve on
+	r.Run(envPortOr("3030")) // listen and serve on
 }
